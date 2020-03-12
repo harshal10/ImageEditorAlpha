@@ -100,11 +100,11 @@ namespace ImageEditorAlpha.Controllers
             return File(imageOutStream.ToArray(), "image/png");
         }
 
-        [HttpPost]
-        public IActionResult test([FromBody]string request)
-        {          
+        //[HttpPost]
+        //public IActionResult test([FromBody]string request)
+        //{          
 
-            return Ok(Response);
-        }
+        //    return Ok(Response);
+        //}
     }
 }
