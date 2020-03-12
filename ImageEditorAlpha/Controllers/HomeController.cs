@@ -30,13 +30,19 @@ namespace ImageEditorAlpha.Controllers
             {
                 Console.Out.WriteLine(ex.ToString());
             }
+            RequestModel request = new RequestModel();
 
-            RequestModel request = new RequestModel
+            try
             {
-                ImageData = model["ImageData"].ToString(),
-                Operations = model["Operations"].ToObject<List<JObject>>()
-            };
-            
+                request.ImageData = model["ImageData"].ToString();
+                request.Operations = model["Operations"].ToObject<List<JObject>>();
+            }
+            catch (Exception ex)
+            {
+                throw new SystemException("Invalid String", ex);
+            }
+
+
             //create data stream
             var imageDataByteArray = Convert.FromBase64String(request.ImageData);
  
@@ -70,9 +76,9 @@ namespace ImageEditorAlpha.Controllers
                     Flip flip = JTemp.ToObject<Flip>();
                     flip.PerformAction(imageFactory);
                 }
-                else if (JOp.ContainsKey("Rotate"))
+                else if (JOp.ContainsKey("RotateRight"))
                 {
-                    var JTemp = JOp["Rotate"];
+                    var JTemp = JOp["RotateRight"];
                     RotateRight rotate = JTemp.ToObject<RotateRight>();
                     rotate.PerformAction(imageFactory);
                 }
@@ -95,31 +101,10 @@ namespace ImageEditorAlpha.Controllers
         }
 
         [HttpPost]
-        public string test(HttpRequestMessage request)
-        {
-            var RequestData = request.Content.ReadAsStringAsync().Result;
+        public IActionResult test([FromBody]string request)
+        {          
 
-            string Response = string.Empty;
-            JObject model = new JObject();
-
-            try
-            {
-                model = JObject.Parse(RequestData);
-            }
-            catch (Exception ex)
-            {
-                Console.Out.WriteLine(ex.ToString());
-            }
-
-            RequestModel Request = new RequestModel
-            {
-                ImageData = model["ImageData"].ToString(),
-            };
-
-            Response = JsonConvert.SerializeObject(Request);
-
-            return Response;
+            return Ok(Response);
         }
-
     }
 }
